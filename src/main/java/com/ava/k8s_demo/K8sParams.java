@@ -5,12 +5,9 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.server.BackgroundSchedulerLiteral;
 
-public class Params {
-	private static final Logger LOG = LogManager.getLogger(Params.class.getName());
+public class K8sParams {
 	private String namespace = null;
 	private String name = null;
 	private Map<String, String> fields = null;
@@ -19,14 +16,19 @@ public class Params {
 	private Map<String, List<String>> inLabels = null;
 	private Map<String, List<String>> notinLabels = null;
 	private String json = null;
-	private ResourceType resourceType = null;
+	private K8sResourceType resourceType = null;
 	private String subPath = null;
 	private boolean isVisitProxy = false;
 	private boolean isSetWatcher = false;
-
+	private boolean isApps = false;
+	private boolean isExtensions =false;
 	public String buildPath() {
 		StringBuilder result = (isVisitProxy ? new StringBuilder("/proxy")
 				: (isSetWatcher ? new StringBuilder("/watch") : new StringBuilder("")));
+		
+		result = (isApps ? new StringBuilder("/apis/apps/v1beta1")
+					: (isExtensions ? new StringBuilder("/apis/extensions/v1beta1") : new StringBuilder("/api/v1")));
+		
 		if (null != namespace)
 			result.append("/namespaces/").append(namespace);
 		result.append("/").append(resourceType.getType());
@@ -44,7 +46,8 @@ public class Params {
 				fieldSelectorStr = builderFieldSelector();
 			} catch (UnsupportedEncodingException e1) {
 				// TODO: handle exception
-				LOG.error(e1);
+				System.out.println(e1.getMessage());
+				
 			}
 			if (labelSelectorStr.length() + fieldSelectorStr.length() > 0)
 				result.append("?");
@@ -98,7 +101,7 @@ public class Params {
 				result.append(URLEncoder.encode(key + " notin (" + listToString(inLabels.get(key), ",") + ")", "GBK"));
 			}
 		}
-		LOG.info("label result:" + result);
+		System.out.println("label result:" + result);
 		return result;
 	}
 
@@ -169,11 +172,11 @@ public class Params {
 		this.json = json;
 	}
 
-	public ResourceType getResourceType() {
+	public K8sResourceType getResourceType() {
 		return resourceType;
 	}
 
-	public void setResourceType(ResourceType resourceType) {
+	public void setResourceType(K8sResourceType resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -199,6 +202,22 @@ public class Params {
 
 	public void setSetWatcher(boolean isSetWatcher) {
 		this.isSetWatcher = isSetWatcher;
+	}
+	
+	public boolean isApps() {
+		return isApps;
+	}
+
+	public void setApps(boolean isApps) {
+		this.isApps = isApps;
+	}
+	
+	public boolean isExtensions() {
+		return isExtensions;
+	}
+
+	public void setExtensions(boolean isExtensions) {
+		this.isExtensions = isExtensions;
 	}
 
 	public Map<String, String> getNotLabels() {

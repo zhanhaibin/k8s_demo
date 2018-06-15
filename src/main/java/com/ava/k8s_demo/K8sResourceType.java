@@ -2,7 +2,7 @@ package com.ava.k8s_demo;
 
 import org.omg.CORBA.PRIVATE_MEMBER;
 
-public enum ResourceType {
+public enum K8sResourceType {
 	NODES("nodes"),
 	NAMESPACES("namespaces"),
 	SERVICES("services"),
@@ -18,10 +18,13 @@ public enum ResourceType {
 	RESOURCEQUOTAS("resourcequotas"),
 	PODTEMPLATES("podtemplates"),
 	PERSISTENTVOLUMECLAIMS("persistentvolumeclaims"),
-	PERSISTEMVOLUMES("persistentvolumes");
+	PERSISTEMVOLUMES("persistentvolumes"),
+	DEPLOYMENTS("deployments"),
+	INGRESSES("ingresses");
+	
 	
 	private String type;
-	private ResourceType(String type) {
+	private K8sResourceType(String type) {
 		// TODO Auto-generated constructor stub
 		this.type = type;
 	}

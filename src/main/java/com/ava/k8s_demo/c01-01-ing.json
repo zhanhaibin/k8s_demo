@@ -1,0 +1,55 @@
+{
+    "kind": "Ingress",
+    "apiVersion": "extensions/v1beta1",
+    "metadata": {
+        "name": "c01-01-ingress",
+        "namespace": "deploy",
+        "creationTimestamp": null,
+        "annotations": {
+            "ingress.kubernetes.io/client-body-buffer-size": "200m",
+            "kubernetes.io/ingress.class": "nginx",
+            "nginx.ingress.kubernetes.io/from-to-www-redirect": "true",
+            "nginx.ingress.kubernetes.io/keepalive-timeout": "300",
+            "nginx.ingress.kubernetes.io/proxy-body-size": "200m",
+            "nginx.ingress.kubernetes.io/proxy-connect-timeout": "1200",
+            "nginx.ingress.kubernetes.io/proxy-read-timeout": "3000",
+            "nginx.ingress.kubernetes.io/proxy-send-timeout": "2400",
+            "nginx.ingress.kubernetes.io/rewrite-target": "/"
+        }
+    },
+    "spec": {
+        "tls": [
+            {
+                "hosts": [
+                    "app2.avacloud.com.cn"
+                ],
+                "secretName": "app-tls"
+            }
+        ],
+        "rules": [
+            {
+                "host": "app2.avacloud.com.cn",
+                "http": {
+                    "paths": [
+                        {
+                            "path": "/c01/i01/",
+                            "backend": {
+                                "serviceName": "c01-01-web",
+                                "servicePort": 80
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "status": {
+        "loadBalancer": {
+            "ingress": [
+                {
+                    "ip": "47.95.97.32"
+                }
+            ]
+        }
+    }
+}

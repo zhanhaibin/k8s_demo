@@ -1,0 +1,31 @@
+{
+    "kind": "Service",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "c01-01-web",
+        "namespace": "deploy",
+        "creationTimestamp": null,
+        "labels": {
+            "name": "c01-01-web"
+        }
+    },
+    "spec": {
+        "ports": [
+            {
+                "protocol": "TCP",
+                "port": 80,
+                "targetPort": 80,
+                "nodePort": 30002
+            }
+        ],
+        "selector": {
+            "app": "c01-01-deploy"
+        },
+        "type": "NodePort",
+        "sessionAffinity": "None",
+        "externalTrafficPolicy": "Cluster"
+    },
+    "status": {
+        "loadBalancer": {}
+    }
+}
