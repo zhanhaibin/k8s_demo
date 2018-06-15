@@ -5,8 +5,6 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-import org.glassfish.jersey.server.BackgroundSchedulerLiteral;
-
 public class K8sParams {
 	private String namespace = null;
 	private String name = null;
@@ -80,7 +78,7 @@ public class K8sParams {
 				if (result.length() > 0) {
 					result.append(",");
 				}
-				result.append(URLEncoder.encode(key + "=" + labels.get(key), "GBK"));
+				result.append(URLEncoder.encode(key + "!=" + labels.get(key), "GBK"));
 
 			}
 		}

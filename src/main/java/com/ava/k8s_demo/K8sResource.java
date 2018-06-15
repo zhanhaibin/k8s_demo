@@ -1,18 +1,19 @@
 package com.ava.k8s_demo;
 
-import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.ParseConversionEvent;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 @Path("k8s")
 public class K8sResource {
@@ -145,6 +146,34 @@ public class K8sResource {
 			}
 		}
 		return null;
+	}
+	
+	@Path("GetPod")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String GetPod() {
+		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sParams params = new K8sParams();
+		params.setResourceType(K8sResourceType.PODS);
+//		Map<String,String> labels = new HashMap<String,String>();
+//		labels.put("app", "nginx");
+//		params.setLabels(labels);
+//		return _rK8sRestfulClient.list(params);
+//		params.setLabels(null);
+//		
+		Map<String, List<String>> inLabels = new HashMap<String,List<String>>();
+		List list = new ArrayList<String>();
+		list.add("nginx");
+		inLabels.put("deploy", list);
+		params.setInLabels(inLabels);
+		return _rK8sRestfulClient.list(params);
+//		params.setInLabels(null);
+//		
+//		Map<String,String> fields = new HashMap<String,String>();
+//		fields.put("metadata.name", "nginx");
+//		params.setLabels(fields);
+//		params.setNamespace("deploy");
+//		return _rK8sRestfulClient.list(params);
 	}
 
 }
