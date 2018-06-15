@@ -1,12 +1,23 @@
 package com.ava.k8s_demo;
+
+import static org.junit.Assert.assertEquals;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.ParseConversionEvent;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 @Path("k8s")
 public class K8sResource {
-	Utils Utils =new Utils();
+	Utils Utils = new Utils();
+
 	@Path("GetNamespacesList")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -18,6 +29,7 @@ public class K8sResource {
 
 		return _rK8sRestfulClient.get(params);
 	}
+
 	@Path("CreateNamespace")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -28,7 +40,7 @@ public class K8sResource {
 		params.setJson(Utils.getJson("D:\\namespaces.json"));
 		return _rK8sRestfulClient.create(params);
 	}
-	
+
 	@Path("GetPodList")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -38,12 +50,12 @@ public class K8sResource {
 		params.setResourceType(K8sResourceType.PODS);
 		return _rK8sRestfulClient.get(params);
 	}
-	
+
 	@Path("GetDeployList")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetDeployList() {
-		//"http://192.168.3.222:8001/apis/apps/v1beta1"
+		// "http://192.168.3.222:8001/apis/apps/v1beta1"
 		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
 		K8sParams params = new K8sParams();
 		params.setApps(true);
@@ -51,40 +63,41 @@ public class K8sResource {
 		params.setNamespace("kube-system");
 		return _rK8sRestfulClient.get(params);
 	}
+
 	@Path("CreateDeploy")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateDeploy() {
-		
+
 		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
 		K8sParams params = new K8sParams();
 		params.setApps(true);
 		params.setResourceType(K8sResourceType.DEPLOYMENTS);
 		params.setJson(Utils.getJson("D:\\c01-01-deploy.json"));
 		params.setNamespace("deploy");
-		return _rK8sRestfulClient.create(params); 
+		return _rK8sRestfulClient.create(params);
 
 	}
-	
+
 	@Path("CreateService")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateService() {
-		//http://192.168.3.222:8001/api/v1
+		// http://192.168.3.222:8001/api/v1
 		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
-		
+
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.SERVICES);
 		params.setJson(Utils.getJson("D:\\c01-01-service.json"));
 		params.setNamespace("deploy");
 		return _rK8sRestfulClient.create(params);
 	}
-	
+
 	@Path("CreateIngress")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateIngress() {
-		//http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
+		// http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
 		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
 		K8sParams params = new K8sParams();
 		params.setExtensions(true);
@@ -93,20 +106,45 @@ public class K8sResource {
 		params.setNamespace("deploy");
 		return _rK8sRestfulClient.create(params);
 	}
-	
+
 	@Path("CreateAll")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateAll() {
-		//http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
+		JsonParser parser = new JsonParser();
+		// http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
 		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
-		Utils.getJson("D:\\c01-01-ing.json");
-		K8sParams params = new K8sParams();
-		params.setExtensions(true);
-		params.setResourceType(K8sResourceType.INGRESSES);
-		params.setJson(Utils.getJson("D:\\c01-01-ing.json"));
-		params.setNamespace("deploy");
-		return null;// _rK8sRestfulClient.create(params);
+		String res = Utils.getJson("D:\\c01-01.json");
+		JsonObject jsonObject = (JsonObject) parser.parse(res);
+		JsonArray array = jsonObject.get("items").getAsJsonArray();
+		StringBuilder sBuilder = null;
+		for (int i = 0; i < array.size(); i++) {
+			JsonObject jo = array.get(i).getAsJsonObject();
+			if (jo.get("kind").getAsString().endsWith("Deployment")) {
+				K8sParams params = new K8sParams();
+				params.setJson(jo.toString());
+				params.setApps(true);
+				params.setResourceType(K8sResourceType.DEPLOYMENTS);
+				params.setNamespace("deploy");
+				_rK8sRestfulClient.create(params);
+			}
+			if (jo.get("kind").getAsString().endsWith("Service")) {
+				K8sParams params = new K8sParams();
+				params.setJson(jo.toString());
+				params.setResourceType(K8sResourceType.SERVICES);
+				params.setNamespace("deploy");
+				_rK8sRestfulClient.create(params);
+			}
+			if (jo.get("kind").getAsString().endsWith("Ingress")) {
+				K8sParams params = new K8sParams();
+				params.setJson(jo.toString());
+				params.setExtensions(true);
+				params.setResourceType(K8sResourceType.INGRESSES);
+				params.setNamespace("deploy");
+				_rK8sRestfulClient.create(params);
+			}
+		}
+		return null;
 	}
-	 
+
 }

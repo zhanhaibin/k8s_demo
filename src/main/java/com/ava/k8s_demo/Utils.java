@@ -41,7 +41,5 @@ public class Utils {
 	    return data.toString();
 	}
 	
-	public JsonArray getJsonArray(String path) {
-		return null;
-	}
+	
 }
