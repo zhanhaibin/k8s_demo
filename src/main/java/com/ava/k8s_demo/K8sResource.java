@@ -23,7 +23,7 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetNamespacesList() {
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.NAMESPACES);
@@ -35,7 +35,7 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateNamespace() {
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.NAMESPACES);
 		params.setJson(Utils.getJson("D:\\namespaces.json"));
@@ -46,7 +46,7 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetPodList() {
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.PODS);
 		return _rK8sRestfulClient.get(params);
@@ -57,7 +57,7 @@ public class K8sResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetDeployList() {
 		// "http://192.168.3.222:8001/apis/apps/v1beta1"
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setApps(true);
 		params.setResourceType(K8sResourceType.DEPLOYMENTS);
@@ -70,7 +70,7 @@ public class K8sResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateDeploy() {
 
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setApps(true);
 		params.setResourceType(K8sResourceType.DEPLOYMENTS);
@@ -85,7 +85,7 @@ public class K8sResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateService() {
 		// http://192.168.3.222:8001/api/v1
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.SERVICES);
@@ -98,8 +98,8 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateIngress() {
-		// http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		// http://192.168.3.222:8001/apis/extensions/v1beta1/ingresses
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setExtensions(true);
 		params.setResourceType(K8sResourceType.INGRESSES);
@@ -113,8 +113,8 @@ public class K8sResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String CreateAll() {
 		JsonParser parser = new JsonParser();
-		// http://101.200.42.71:8001/apis/extensions/v1beta1/ingresses
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		// http://192.168.3.222:8001/apis/extensions/v1beta1/ingresses
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		String res = Utils.getJson("D:\\c01-01.json");
 		JsonObject jsonObject = (JsonObject) parser.parse(res);
 		JsonArray array = jsonObject.get("items").getAsJsonArray();
@@ -152,7 +152,7 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetPod() {
-		K8sRestfulClientImpl _rK8sRestfulClient = new K8sRestfulClientImpl("http://101.200.42.71:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.PODS);
 //		Map<String,String> labels = new HashMap<String,String>();
