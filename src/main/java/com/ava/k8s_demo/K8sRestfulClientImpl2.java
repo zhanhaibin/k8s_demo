@@ -3,6 +3,7 @@ package com.ava.k8s_demo;
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -46,9 +47,9 @@ public class K8sRestfulClientImpl2 implements K8sRestfulClient {
 		JerseyWebTarget resource = _client.target(_baseUrl+params.buildPath());
 		System.out.println("URL:"+_baseUrl+params.buildPath());
 		System.out.println("CREATE resource:" + params.getJson());
-		
-		String response =resource.request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
-		return response;
+		Response response = resource.request(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params.getJson()));
+	      
+		return response.getStatusInfo().toString();
 	}
 
 	@Override
@@ -70,13 +71,13 @@ public class K8sRestfulClientImpl2 implements K8sRestfulClient {
 	@Override
 	public String updateWithMediaType(K8sParams params, String mediaType) {
 		// TODO Auto-generated method stub
-//		JerseyWebTarget resource = _client.target(_baseUrl+params.buildPath());
-//		System.out.println("URL:"+_baseUrl+params.buildPath());
-//		System.out.println("Patch resource:"+ params.getJson());
-//		String response = resource.type(mediaType).accept(MediaType.APPLICATION_JSON_TYPE).method(METHOD_PATCH, String.class,params.getJson());
-//		System.out.println("UPdate resource:"+params.buildPath() +"result:\n"+ response);
-//		return response;
-		return null;
+		JerseyWebTarget resource = _client.target(_baseUrl+params.buildPath());
+		System.out.println("URL:"+_baseUrl+params.buildPath());
+		System.out.println("Patch resource:"+ params.getJson());
+		Response response = resource.request(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE).method(METHOD_PATCH, Entity.json(params.getJson()));
+		System.out.println("UPdate resource:"+params.buildPath() +"result:\n"+ response);
+		return response.getMetadata().toString();
+		
 	}
 
 	@Override
