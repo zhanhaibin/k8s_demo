@@ -1,9 +1,12 @@
 package com.ava.k8s_demo;
 
+import java.security.KeyStore.Entry;
+
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -15,7 +18,7 @@ import org.glassfish.jersey.client.JerseyWebTarget;
 //import com.sun.jersey.api.client.config.DefaultClientConfig;
 //import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
 
-public class K8sRestfulClientImpl2 implements K8sRestfulClient {
+public class K8sRestfulClientImpl2 implements K8sRestfulClient2 {
 	private static final String  METHOD_PATCH = "PATCH";
 	private String _baseUrl = null;
     JerseyClient _client = null;
@@ -42,14 +45,15 @@ public class K8sRestfulClientImpl2 implements K8sRestfulClient {
 	}
 
 	@Override
-	public String create(K8sParams params) {
+	public Response create2(K8sParams params) {
 		// TODO Auto-generated method stub
 		JerseyWebTarget resource = _client.target(_baseUrl+params.buildPath());
 		System.out.println("URL:"+_baseUrl+params.buildPath());
 		System.out.println("CREATE resource:" + params.getJson());
 		Response response = resource.request(MediaType.APPLICATION_JSON_TYPE).accept(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params.getJson()));
-	      
-		return response.getStatusInfo().toString();
+		
+		return response;
+		  
 	}
 
 	@Override
@@ -114,6 +118,11 @@ public class K8sRestfulClientImpl2 implements K8sRestfulClient {
 	@Override
 	public void close() {
 		_client.close();
+	}
+	@Override
+	public String create(K8sParams params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

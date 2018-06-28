@@ -1,6 +1,8 @@
 package com.ava.k8s_demo;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -41,7 +43,7 @@ public class K8sRestfulClientImpl implements K8sRestfulClient {
 		System.out.println("URL:"+_baseUrl+params.buildPath());
 		System.out.println("CREATE resource:" + params.getJson());
 		String response = (null==params.getJson())? resource.accept(MediaType.APPLICATION_JSON).post(String.class):resource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(String.class,params.getJson());
-		return response;
+		return response; 
 	}
 
 	@Override

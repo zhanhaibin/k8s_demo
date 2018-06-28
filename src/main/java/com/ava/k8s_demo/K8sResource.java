@@ -1,4 +1,4 @@
-package com.ava.k8s_demo;
+ package com.ava.k8s_demo;
 
 
 import java.util.ArrayList;
@@ -9,7 +9,12 @@ import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.glassfish.jersey.internal.guava.ExecutionError;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -118,7 +123,8 @@ public class K8sResource {
 		String res = Utils.getJson("D:\\c01-01.json");
 		JsonObject jsonObject = (JsonObject) parser.parse(res);
 		JsonArray array = jsonObject.get("items").getAsJsonArray();
-		StringBuilder sBuilder = null;
+		 
+		ResponseBuilder rBuilder = null;
 		for (int i = 0; i < array.size(); i++) {
 			JsonObject jo = array.get(i).getAsJsonObject();
 			if (jo.get("kind").getAsString().endsWith("Deployment")) {
@@ -127,14 +133,24 @@ public class K8sResource {
 				params.setApps(true);
 				params.setResourceType(K8sResourceType.DEPLOYMENTS);
 				params.setNamespace("deploy");
-				_rK8sRestfulClient.create(params);
+				try {
+					rBuilder =_rK8sRestfulClient.create2(params).status(Response.Status.OK);
+				} catch (Exception e) {
+					// TODO: handle exception
+					return e.getMessage();
+				}
 			}
 			if (jo.get("kind").getAsString().endsWith("Service")) {
 				K8sParams params = new K8sParams();
 				params.setJson(jo.toString());
 				params.setResourceType(K8sResourceType.SERVICES);
 				params.setNamespace("deploy");
-				_rK8sRestfulClient.create(params);
+				try {
+					rBuilder =_rK8sRestfulClient.create2(params).status(Response.Status.OK);
+				} catch (Exception e) {
+					// TODO: handle exception
+					return e.getMessage();
+				}
 			}
 			if (jo.get("kind").getAsString().endsWith("Ingress")) {
 				K8sParams params = new K8sParams();
@@ -142,10 +158,15 @@ public class K8sResource {
 				params.setExtensions(true);
 				params.setResourceType(K8sResourceType.INGRESSES);
 				params.setNamespace("deploy");
-				_rK8sRestfulClient.create(params);
+				try {
+					rBuilder =_rK8sRestfulClient.create2(params).status(Response.Status.OK);
+				} catch (Exception e) {
+					// TODO: handle exception
+					return e.getMessage();
+				}
 			}
 		}
-		return null;
+		return rBuilder.build().getStatusInfo().toString();
 	}
 	
 	@Path("GetPod")
