@@ -2,6 +2,7 @@
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,18 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.glassfish.jersey.internal.guava.ExecutionError;
 
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.ecs.model.v20140526.DescribeInstancesRequest;
+import com.aliyuncs.ecs.model.v20140526.DescribeInstancesResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.DefaultProfile;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import com.ava.k8s_demo.K8sAliyun;
 @Path("k8s")
 public class K8sResource {
 	Utils Utils = new Utils();
@@ -28,7 +37,7 @@ public class K8sResource {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String GetNamespacesList() {
-		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("http://192.168.3.222:8001");
+		K8sRestfulClientImpl2 _rK8sRestfulClient = new K8sRestfulClientImpl2("https://47.95.96.218:6443");
 
 		K8sParams params = new K8sParams();
 		params.setResourceType(K8sResourceType.NAMESPACES);
@@ -196,5 +205,30 @@ public class K8sResource {
 //		params.setNamespace("deploy");
 //		return _rK8sRestfulClient.list(params);
 	}
-
+     
+	@Path("GetTest")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String GetTest() {
+		DefaultProfile profile = DefaultProfile.getProfile(
+			    "<your-region-id>",          // 地域ID
+			    "<your-access-key-id>",      // RAM账号的AccessKey ID
+			    "<your-access-key-secret>"); // RAM账号AccessKey Secret
+		IAcsClient client = new DefaultAcsClient(profile);
+		DescribeInstancesRequest request = new DescribeInstancesRequest();
+		request.setPageSize(10);
+		DescribeInstancesResponse response;
+		try {
+		    response = client.getAcsResponse(request);
+		    for (DescribeInstancesResponse.Instance instance:response.getInstances()) {
+		        System.out.println(instance.getPublicIpAddress());
+		    }
+		} catch (ServerException e) {
+		    e.printStackTrace();
+		} catch (ClientException e) {
+		    e.printStackTrace();
+		}
+		return null;
+	}
+	
 }
