@@ -206,28 +206,12 @@ public class K8sResource {
 //		return _rK8sRestfulClient.list(params);
 	}
      
-	@Path("GetTest")
+	@Path("GetStringToSign")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String GetTest() {
-		DefaultProfile profile = DefaultProfile.getProfile(
-			    "<your-region-id>",          // 地域ID
-			    "<your-access-key-id>",      // RAM账号的AccessKey ID
-			    "<your-access-key-secret>"); // RAM账号AccessKey Secret
-		IAcsClient client = new DefaultAcsClient(profile);
-		DescribeInstancesRequest request = new DescribeInstancesRequest();
-		request.setPageSize(10);
-		DescribeInstancesResponse response;
-		try {
-		    response = client.getAcsResponse(request);
-		    for (DescribeInstancesResponse.Instance instance:response.getInstances()) {
-		        System.out.println(instance.getPublicIpAddress());
-		    }
-		} catch (ServerException e) {
-		    e.printStackTrace();
-		} catch (ClientException e) {
-		    e.printStackTrace();
-		}
+	public String GetStringToSign() {
+		K8sAliyun aliyun = new K8sAliyun();
+		aliyun.GetHttps();
 		return null;
 	}
 	
